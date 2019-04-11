@@ -6,8 +6,8 @@
 ;; Package: gcmh
 ;; Homepage: https://gitlab.com/koral/gcmh
 ;; Version: 0.1
-;; Package-Requires:
-;; Keywords: garbage collector, garbage collection
+;; Package-Requires: ((emacs "24"))
+;; Keywords: internal
 
 ;; This file is not part of GNU Emacs.
 
@@ -25,7 +25,7 @@
 ;; along with GNU Emacs.  If not, see <https://www.gnu.org/licenses/>.
 
 ;;; Commentary:
-;; Enforce an optimized Garbage Collection strategy to minimize GC
+;; Enforce an optimized sneaky Garbage Collection strategy to minimize GC
 ;; interference with the user activity.
 ;; A more detailed explanation of the rationale behind this can be found at
 ;; http://akrl.sdf.org/
@@ -43,6 +43,11 @@ This is the gc threshold used while in idle.  Default value is \
   "High cons gc threshold.
 This should be set to a value that makes GC unlikely but does not make the OS \
 paging."
+  :group 'gcmh
+  :type 'number)
+
+(defcustom gcmh-time-constant 15
+  "Idle time to wait in seconds before triggering GC."
   :group 'gcmh
   :type 'number)
 
@@ -65,10 +70,10 @@ paging."
 This is to be used with the `pre-command-hook'."
   (setq gc-cons-threshold gcmh-high-cons-threshold))
 
-;;;###autoload
 (define-minor-mode gcmh-mode
   "Minor mode tweak Garbage Colelction strategy."
   :lighter " GCMH"
+  :require 'gcmh
   :global t
   (cond
    (gcmh-mode
@@ -79,13 +84,14 @@ This is to be used with the `pre-command-hook'."
       ;; When idle for 15sec run the GC no matter what.
       (unless gcmh-timer
 	(setq gcmh-timer
-	      (run-with-idle-timer 15 t
+	      (run-with-idle-timer gcmh-time-constant t
 				   (lambda ()
 				     (if gcmh-verbose
 					 (message "Garbage Collector has run for %.06fsec"
 						  (gcmh-time (garbage-collect)))
 				       (garbage-collect))
 				     (setq gc-cons-threshold gcmh-low-cons-threshold)))))
+      ;; Release severe GC strategy before the user restart to working
       (add-hook 'pre-command-hook #'gcmh-set-high-threshold)))
    (t (progn
 	(setq gc-cons-threshold gcmh-low-cons-threshold)
