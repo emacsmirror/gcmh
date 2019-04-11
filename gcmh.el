@@ -25,8 +25,10 @@
 ;; along with GNU Emacs.  If not, see <https://www.gnu.org/licenses/>.
 
 ;;; Commentary:
-;; Enforce an optimized sneaky Garbage Collection strategy to minimize GC
-;; interference with the user activity.
+;; Enforce a sneaky Garbage Collection strategy to minimize GC interference with
+;; the activity.
+;; During normal use a high GC threshold is set.
+;; When idling GC is immediately triggered and a low threshold is set.
 ;; A more detailed explanation of the rationale behind this can be found at
 ;; http://akrl.sdf.org/
 
@@ -37,10 +39,10 @@
 (require 'timer)
 (require 'easy-mmode)
 
-(defcustom gcmh-low-cons-threshold gc-cons-threshold
+(defcustom gcmh-low-cons-threshold 800000
   "High cons gc threshold.
-This is the gc threshold used while in idle.  Default value is \
-`gc-cons-threshold'"
+This is the gc threshold used while while idling.  Default value is \
+the same of `gc-cons-threshold' default"
   :group 'gcmh
   :type 'number)
 
@@ -57,7 +59,7 @@ paging."
   :type 'number)
 
 (defcustom gcmh-verbose nil
-  "If t print a message into when garbage collecting."
+  "If t print a message when garbage collecting."
   :group 'gcmh
   :type 'boolean)
 
