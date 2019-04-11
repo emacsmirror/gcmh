@@ -32,6 +32,11 @@
 
 ;;; Code:
 
+(require 'custom)
+(require 'message)
+(require 'timer)
+(require 'easy-mmode)
+
 (defcustom gcmh-low-cons-threshold gc-cons-threshold
   "High cons gc threshold.
 This is the gc threshold used while in idle.  Default value is \
