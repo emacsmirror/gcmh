@@ -77,6 +77,7 @@ paging."
 This is to be used with the `pre-command-hook'."
   (setq gc-cons-threshold gcmh-high-cons-threshold))
 
+;;;###autoload
 (define-minor-mode gcmh-mode
   "Minor mode tweak Garbage Colelction strategy."
   :lighter " GCMH"
