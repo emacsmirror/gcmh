@@ -1,3 +1,5 @@
+[[License: GPL v3][https://img.shields.io/badge/License-GPL%20v3-blue.svg]]
+[[https://melpa.org/#/gcmh][file:https://melpa.org/packages/gcmh-badge.svg]]
 * GCMH - the Garbage Collector Magic Hack
 
   Enforce a sneaky Garbage Collection strategy to minimize GC interference with
