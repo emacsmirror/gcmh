@@ -79,7 +79,7 @@ This is to be used with the `pre-command-hook'."
 
 ;;;###autoload
 (define-minor-mode gcmh-mode
-  "Minor mode tweak Garbage Colelction strategy."
+  "Minor mode tweak Garbage Collection strategy."
   :lighter " GCMH"
   :require 'gcmh
   :global t
