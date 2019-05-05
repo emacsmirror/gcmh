@@ -10,6 +10,11 @@
 
   [[http://akrl.sdf.org/]]
 
+  WARNING: in case Emacs is used in system already under severe memory pressure
+  be sure to understand how GCMH works and trim ~gcmh-high-cons-threshold~
+  accordingly. Default value may be to big and/or GCMH may not fit your use
+  case.
+
 ** Usage
 
    Add into your .emacs
