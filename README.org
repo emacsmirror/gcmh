@@ -13,7 +13,7 @@
 
   [[http://akrl.sdf.org/]]
 
-*** WARNING
+  - WARNING
 
     In case Emacs is used in a system already under severe memory pressure
     be sure to understand how GCMH works and trim ~gcmh-high-cons-threshold~
