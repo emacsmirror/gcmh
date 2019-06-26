@@ -75,8 +75,9 @@ This is to be used with the `pre-command-hook'."
 (defun gcmh-idle-garbage-collect ()
   "Run garbage collection after `gcmh-idle-delay'."
   (if gcmh-verbose
-      (message "Garbage Collector ran for %.06f sec"
-               (gcmh-time (garbage-collect)))
+      (progn (message "Garbage collecting...")
+             (message "Garbage Collector ran for %.06f sec"
+                      (gcmh-time (garbage-collect))))
     (garbage-collect))
   (setq gc-cons-threshold gcmh-low-cons-threshold))
 
