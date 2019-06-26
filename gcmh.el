@@ -34,37 +34,32 @@
 
 ;;; Code:
 
-(require 'custom)
-(require 'message)
-(require 'timer)
-(require 'easy-mmode)
-
 (defcustom gcmh-low-cons-threshold 800000
-  "High cons gc threshold.
-This is the gc threshold used while while idling.  Default value is \
-the same of `gc-cons-threshold' default"
+  "Low cons gc threshold.
+This is the gc threshold used while while idling. Default value
+is the same of `gc-cons-threshold' default"
   :group 'gcmh
   :type 'number)
 
 (defcustom gcmh-high-cons-threshold #x40000000
   "High cons gc threshold.
-This should be set to a value that makes GC unlikely but does not make the OS \
-paging."
+This should be set to a value that makes GC unlikely but does not
+make the OS paging."
   :group 'gcmh
   :type 'number)
 
-(defcustom gcmh-time-constant 15
+(defcustom gcmh-idle-delay 15
   "Idle time to wait in seconds before triggering GC."
   :group 'gcmh
   :type 'number)
 
 (defcustom gcmh-verbose nil
-  "If t print a message when garbage collecting."
+  "If t, print a message when garbage collecting."
   :group 'gcmh
   :type 'boolean)
 
-(defvar gcmh-timer nil
-  "Idle timer set for trigering GC.")
+(defvar gcmh-idle-timer nil
+  "Idle timer for trigering GC.")
 
 (defmacro gcmh-time (&rest body)
   "Measure and return the time it takes to evaluate BODY."
@@ -77,35 +72,32 @@ paging."
 This is to be used with the `pre-command-hook'."
   (setq gc-cons-threshold gcmh-high-cons-threshold))
 
+(defun gcmh-idle-garbage-collect ()
+  "Run garbage collection after `gcmh-idle-delay'."
+  (if gcmh-verbose
+      (progn (message "Garbage collecting...")
+             (message "Garbage Collector ran for %.06f sec"
+                      (gcmh-time (garbage-collect))))
+    (garbage-collect))
+  (setq gc-cons-threshold gcmh-low-cons-threshold))
+
 ;;;###autoload
 (define-minor-mode gcmh-mode
-  "Minor mode tweak Garbage Collection strategy."
+  "Minor mode to tweak Garbage Collection strategy."
   :lighter " GCMH"
-  :require 'gcmh
   :global t
-  (cond
-   (gcmh-mode
-    (progn
-      (setq gc-cons-threshold gcmh-high-cons-threshold)
-      ;; Print a message when garbage collecting
-      (setq garbage-collection-messages gcmh-verbose)
-      ;; When idle for 15sec run the GC no matter what.
-      (unless gcmh-timer
-	(setq gcmh-timer
-	      (run-with-idle-timer gcmh-time-constant t
-				   (lambda ()
-				     (if gcmh-verbose
-					 (message "Garbage Collector has run for %.06fsec"
-						  (gcmh-time (garbage-collect)))
-				       (garbage-collect))
-				     (setq gc-cons-threshold gcmh-low-cons-threshold)))))
-      ;; Release severe GC strategy before the user restart to working
-      (add-hook 'pre-command-hook #'gcmh-set-high-threshold)))
-   (t (progn
-	(setq gc-cons-threshold gcmh-low-cons-threshold)
-	(cancel-timer gcmh-timer)
-	(setq gcmh-timer nil)
-	(remove-hook 'pre-command-hook #'gcmh-set-high-threshold)))))
+  (if gcmh-mode
+      (progn
+        (setq  gc-cons-threshold gcmh-high-cons-threshold
+               ;; When idle for gcmh-idle-delay, run the GC no matter what.
+               gcmh-idle-timer (run-with-idle-timer gcmh-idle-delay t
+                                                    #'gcmh-idle-garbage-collect))
+        ;; Release severe GC strategy before the user restart to working
+        (add-hook 'pre-command-hook #'gcmh-set-high-threshold))
+    (cancel-timer gcmh-idle-timer)
+    (setq gc-cons-threshold gcmh-low-cons-threshold
+          gcmh-idle-timer nil)
+    (remove-hook 'pre-command-hook #'gcmh-set-high-threshold)))
 
 (provide 'gcmh)
 
