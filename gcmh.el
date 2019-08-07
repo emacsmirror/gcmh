@@ -35,16 +35,16 @@
 ;;; Code:
 
 (defcustom gcmh-low-cons-threshold 800000
-  "Low cons gc threshold.
-This is the gc threshold used while while idling. Default value
-is the same of `gc-cons-threshold' default"
+  "Low cons GC threshold.
+This is the GC threshold used while while idling. Default value
+is the same of `gc-cons-threshold' default."
   :group 'gcmh
   :type 'number)
 
 (defcustom gcmh-high-cons-threshold #x40000000
-  "High cons gc threshold.
+  "High cons GC threshold.
 This should be set to a value that makes GC unlikely but does not
-make the OS paging."
+cause OS paging."
   :group 'gcmh
   :type 'number)
 
@@ -59,7 +59,7 @@ make the OS paging."
   :type 'boolean)
 
 (defvar gcmh-idle-timer nil
-  "Idle timer for trigering GC.")
+  "Idle timer for triggering GC.")
 
 (defmacro gcmh-time (&rest body)
   "Measure and return the time it takes to evaluate BODY."
@@ -68,7 +68,7 @@ make the OS paging."
      (float-time (time-since time))))
 
 (defun gcmh-set-high-threshold ()
-  "Set the high gc thereshold.
+  "Set the high GC threshold.
 This is to be used with the `pre-command-hook'."
   (setq gc-cons-threshold gcmh-high-cons-threshold))
 
