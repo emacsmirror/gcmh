@@ -35,16 +35,16 @@
 ;;; Code:
 
 (defcustom gcmh-low-cons-threshold 800000
-  "Low cons gc threshold.
-This is the gc threshold used while while idling. Default value
-is the same of `gc-cons-threshold' default"
+  "Low cons GC threshold.
+This is the GC threshold used while idling. Default value is the
+same of `gc-cons-threshold' default."
   :group 'gcmh
   :type 'number)
 
 (defcustom gcmh-high-cons-threshold #x40000000
-  "High cons gc threshold.
+  "High cons GC threshold.
 This should be set to a value that makes GC unlikely but does not
-make the OS paging."
+cause OS paging."
   :group 'gcmh
   :type 'number)
 
@@ -59,7 +59,7 @@ make the OS paging."
   :type 'boolean)
 
 (defvar gcmh-idle-timer nil
-  "Idle timer for trigering GC.")
+  "Idle timer for triggering GC.")
 
 (defmacro gcmh-time (&rest body)
   "Measure and return the time it takes to evaluate BODY."
@@ -68,7 +68,7 @@ make the OS paging."
      (float-time (time-since time))))
 
 (defun gcmh-set-high-threshold ()
-  "Set the high gc thereshold.
+  "Set the high GC threshold.
 This is to be used with the `pre-command-hook'."
   (setq gc-cons-threshold gcmh-high-cons-threshold))
 
@@ -86,6 +86,10 @@ This is to be used with the `pre-command-hook'."
   "Minor mode to tweak Garbage Collection strategy."
   :lighter " GCMH"
   :global t
+
+  ;; Cancel any pending timer (prevents duplicate idle timers).
+  (when (timerp gcmh-idle-timer)
+    (cancel-timer gcmh-idle-timer))
   (if gcmh-mode
       (progn
         (setq  gc-cons-threshold gcmh-high-cons-threshold
@@ -94,7 +98,6 @@ This is to be used with the `pre-command-hook'."
                                                     #'gcmh-idle-garbage-collect))
         ;; Release severe GC strategy before the user restart to working
         (add-hook 'pre-command-hook #'gcmh-set-high-threshold))
-    (cancel-timer gcmh-idle-timer)
     (setq gc-cons-threshold gcmh-low-cons-threshold
           gcmh-idle-timer nil)
     (remove-hook 'pre-command-hook #'gcmh-set-high-threshold)))
