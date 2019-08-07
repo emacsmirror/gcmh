@@ -36,8 +36,8 @@
 
 (defcustom gcmh-low-cons-threshold 800000
   "Low cons GC threshold.
-This is the GC threshold used while while idling. Default value
-is the same of `gc-cons-threshold' default."
+This is the GC threshold used while idling. Default value is the
+same of `gc-cons-threshold' default."
   :group 'gcmh
   :type 'number)
 
