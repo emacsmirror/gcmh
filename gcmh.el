@@ -86,6 +86,10 @@ This is to be used with the `pre-command-hook'."
   "Minor mode to tweak Garbage Collection strategy."
   :lighter " GCMH"
   :global t
+
+  ;; Cancel any pending timer (prevents duplicate idle timers).
+  (when (timerp gcmh-idle-timer)
+    (cancel-timer gcmh-idle-timer))
   (if gcmh-mode
       (progn
         (setq  gc-cons-threshold gcmh-high-cons-threshold
@@ -94,7 +98,6 @@ This is to be used with the `pre-command-hook'."
                                                     #'gcmh-idle-garbage-collect))
         ;; Release severe GC strategy before the user restart to working
         (add-hook 'pre-command-hook #'gcmh-set-high-threshold))
-    (cancel-timer gcmh-idle-timer)
     (setq gc-cons-threshold gcmh-low-cons-threshold
           gcmh-idle-timer nil)
     (remove-hook 'pre-command-hook #'gcmh-set-high-threshold)))
