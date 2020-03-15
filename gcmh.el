@@ -82,7 +82,8 @@ This is to be used with the `pre-command-hook'."
 		     (gcmh-time (garbage-collect)))
 	  (error (message "Garbage collecting...failed")
 		 (signal (car e) (cdr e)))))
-    (garbage-collect)))
+    (garbage-collect))
+  (setq gc-cons-threshold gcmh-low-cons-threshold))
 
 ;;;###autoload
 (define-minor-mode gcmh-mode
