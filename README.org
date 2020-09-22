@@ -25,9 +25,8 @@
    Add into your .emacs
 
    #+BEGIN_SRC
-(add-to-list 'load-path "path-to-gcmh-here")
-(require 'gcmh)
-(gcmh-mode 1)
+   (add-to-list 'load-path "path-to-gcmh-here")
+   (gcmh-mode 1)
    #+END_SRC
 
    If this is done at the beginning of your .emacs start-up time should
