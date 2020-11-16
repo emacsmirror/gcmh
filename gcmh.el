@@ -49,7 +49,15 @@ cause OS paging."
   :type 'number)
 
 (defcustom gcmh-idle-delay 15
-  "Idle time to wait in seconds before triggering GC."
+  "Idle time to wait in seconds before triggering GC.
+If `auto' this is auto computed based on `gcmh-auto-idle-delay-factor'."
+  :group 'gcmh
+  :type '(choice number (const auto)))
+
+(defcustom gcmh-auto-idle-delay-factor 10
+  "Factor to compute the idle delay when in idle-delay auto mode.
+The idle delay will be `gcmh-auto-idle-delay-factor' times the
+time the last non idle garbage collection time."
   :group 'gcmh
   :type 'number)
 
@@ -72,13 +80,19 @@ cause OS paging."
 This is to be used with the `pre-command-hook'."
   (setq gc-cons-threshold gcmh-high-cons-threshold))
 
+(defvar gcmh-last-gc-time 0.1
+  "How long it took to perform the last garbage collection.")
+
 (defun gcmh-register-idle-timer ()
   "Register a timer to run `gcmh-idle-garbage-collect'.
 Cancel the previous one if present."
-  (when (timerp gcmh-idle-timer)
-    (cancel-timer gcmh-idle-timer))
-  (setf gcmh-idle-timer
-	(run-with-idle-timer gcmh-idle-delay nil #'gcmh-idle-garbage-collect)))
+  (let ((idle-t (if (eq gcmh-idle-delay 'auto)
+		    (* gcmh-auto-idle-delay-factor gcmh-last-gc-time)
+		  gcmh-idle-delay)))
+    (when (timerp gcmh-idle-timer)
+      (cancel-timer gcmh-idle-timer))
+    (setf gcmh-idle-timer
+	  (run-with-idle-timer idle-t nil #'gcmh-idle-garbage-collect))))
 
 (defun gcmh-idle-garbage-collect ()
   "Run garbage collection after `gcmh-idle-delay'."
@@ -87,10 +101,10 @@ Cancel the previous one if present."
 	(message "Garbage collecting...")
 	(condition-case-unless-debug e
 	    (message "Garbage collecting...done (%.3fs)"
-		     (gcmh-time (garbage-collect)))
+		     (setq gcmh-last-gc-time (gcmh-time (garbage-collect))))
 	  (error (message "Garbage collecting...failed")
 		 (signal (car e) (cdr e)))))
-    (garbage-collect))
+    (setq gcmh-last-gc-time (gcmh-time (garbage-collect))))
   (setq gc-cons-threshold gcmh-low-cons-threshold))
 
 ;;;###autoload
