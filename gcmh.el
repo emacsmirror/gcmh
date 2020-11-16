@@ -2,33 +2,32 @@
 
 ;; Copyright (C) 2019-2020  Free Software Foundation, Inc.
 
+;; Author: Andrea Corallo <akrl@sdf.org>
 ;; Maintainer: akrl@sdf.org
 ;; Package: gcmh
 ;; Homepage: https://gitlab.com/koral/gcmh
-;; Version: 0.2
+;; Version: 0.2.1
 ;; Package-Requires: ((emacs "24"))
 ;; Keywords: internal
 
-;; This file is not part of GNU Emacs.
-
-;; GNU Emacs is free software: you can redistribute it and/or modify
+;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
 ;; the Free Software Foundation, either version 3 of the License, or
 ;; (at your option) any later version.
 
-;; GNU Emacs is distributed in the hope that it will be useful,
+;; This program is distributed in the hope that it will be useful,
 ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
 ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ;; GNU General Public License for more details.
 
 ;; You should have received a copy of the GNU General Public License
-;; along with GNU Emacs.  If not, see <https://www.gnu.org/licenses/>.
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ;;; Commentary:
 ;; Enforce a sneaky Garbage Collection strategy to minimize GC interference with
 ;; the activity.
 ;; During normal use a high GC threshold is set.
-;; When idling GC is immediately triggered and a low threshold is set.
+;; When idling GC is triggered and a low threshold is set.
 ;; A more detailed explanation of the rationale behind this can be found at
 ;; http://akrl.sdf.org/
 
