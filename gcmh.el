@@ -92,7 +92,7 @@ Cancel the previous one if present."
     (when (timerp gcmh-idle-timer)
       (cancel-timer gcmh-idle-timer))
     (setf gcmh-idle-timer
-	  (run-with-idle-timer idle-t nil #'gcmh-idle-garbage-collect))))
+	  (run-with-timer idle-t nil #'gcmh-idle-garbage-collect))))
 
 (defun gcmh-idle-garbage-collect ()
   "Run garbage collection after `gcmh-idle-delay'."
