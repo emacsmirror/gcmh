@@ -78,7 +78,7 @@ time the last non idle garbage collection time."
 (defun gcmh-set-high-threshold ()
   "Set the high GC threshold.
 This is to be used with the `pre-command-hook'."
-  (setq gc-cons-threshold gcmh-high-cons-threshold))
+  (setf gc-cons-threshold gcmh-high-cons-threshold))
 
 (defvar gcmh-last-gc-time 0.1
   "How long it took to perform the last garbage collection.")
@@ -101,11 +101,11 @@ Cancel the previous one if present."
 	(message "Garbage collecting...")
 	(condition-case-unless-debug e
 	    (message "Garbage collecting...done (%.3fs)"
-		     (setq gcmh-last-gc-time (gcmh-time (garbage-collect))))
+		     (setf gcmh-last-gc-time (gcmh-time (garbage-collect))))
 	  (error (message "Garbage collecting...failed")
 		 (signal (car e) (cdr e)))))
-    (setq gcmh-last-gc-time (gcmh-time (garbage-collect))))
-  (setq gc-cons-threshold gcmh-low-cons-threshold))
+    (setf gcmh-last-gc-time (gcmh-time (garbage-collect))))
+  (setf gc-cons-threshold gcmh-low-cons-threshold))
 
 ;;;###autoload
 (define-minor-mode gcmh-mode
@@ -122,7 +122,7 @@ Cancel the previous one if present."
 	;; Release severe GC strategy before the user restart to working
 	(add-hook 'pre-command-hook #'gcmh-set-high-threshold)
 	(add-hook 'post-command-hook #'gcmh-register-idle-timer))
-    (setq gc-cons-threshold gcmh-low-cons-threshold
+    (setf gc-cons-threshold gcmh-low-cons-threshold
           gcmh-idle-timer nil)
     (remove-hook 'pre-command-hook #'gcmh-set-high-threshold)
     (remove-hook 'post-command-hook #'gcmh-register-idle-timer)))
