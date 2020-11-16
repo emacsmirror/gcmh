@@ -72,6 +72,14 @@ cause OS paging."
 This is to be used with the `pre-command-hook'."
   (setq gc-cons-threshold gcmh-high-cons-threshold))
 
+(defun gcmh-register-idle-timer ()
+  "Register a timer to run `gcmh-idle-garbage-collect'.
+Cancel the previous one if present."
+  (when (timerp gcmh-idle-timer)
+    (cancel-timer gcmh-idle-timer))
+  (setf gcmh-idle-timer
+	(run-with-idle-timer gcmh-idle-delay nil #'gcmh-idle-garbage-collect)))
+
 (defun gcmh-idle-garbage-collect ()
   "Run garbage collection after `gcmh-idle-delay'."
   (if gcmh-verbose
@@ -96,15 +104,14 @@ This is to be used with the `pre-command-hook'."
     (cancel-timer gcmh-idle-timer))
   (if gcmh-mode
       (progn
-        (setq  gc-cons-threshold gcmh-high-cons-threshold
-               ;; When idle for gcmh-idle-delay, run the GC no matter what.
-               gcmh-idle-timer (run-with-idle-timer gcmh-idle-delay t
-                                                    #'gcmh-idle-garbage-collect))
-        ;; Release severe GC strategy before the user restart to working
-        (add-hook 'pre-command-hook #'gcmh-set-high-threshold))
+        (setf gc-cons-threshold gcmh-high-cons-threshold)
+	;; Release severe GC strategy before the user restart to working
+	(add-hook 'pre-command-hook #'gcmh-set-high-threshold)
+	(add-hook 'post-command-hook #'gcmh-register-idle-timer))
     (setq gc-cons-threshold gcmh-low-cons-threshold
           gcmh-idle-timer nil)
-    (remove-hook 'pre-command-hook #'gcmh-set-high-threshold)))
+    (remove-hook 'pre-command-hook #'gcmh-set-high-threshold)
+    (remove-hook 'post-command-hook #'gcmh-register-idle-timer)))
 
 (provide 'gcmh)
 
