@@ -54,7 +54,7 @@ If `auto' this is auto computed based on `gcmh-auto-idle-delay-factor'."
   :group 'gcmh
   :type '(choice number (const auto)))
 
-(defcustom gcmh-auto-idle-delay-factor 10
+(defcustom gcmh-auto-idle-delay-factor 20
   "Factor to compute the idle delay when in idle-delay auto mode.
 The idle delay will be `gcmh-auto-idle-delay-factor' times the
 time the last non idle garbage collection time."
