@@ -83,7 +83,7 @@ This is to be used with the `pre-command-hook'."
 (defvar gcmh-last-gc-time 0.1
   "How long it took to perform the last garbage collection.")
 
-(defun gcmh-register-idle-timer ()
+(defun gcmh-register-idle-gc ()
   "Register a timer to run `gcmh-idle-garbage-collect'.
 Cancel the previous one if present."
   (let ((idle-t (if (eq gcmh-idle-delay 'auto)
@@ -121,11 +121,11 @@ Cancel the previous one if present."
         (setf gc-cons-threshold gcmh-high-cons-threshold)
 	;; Release severe GC strategy before the user restart to working
 	(add-hook 'pre-command-hook #'gcmh-set-high-threshold)
-	(add-hook 'post-command-hook #'gcmh-register-idle-timer))
+	(add-hook 'post-command-hook #'gcmh-register-idle-gc))
     (setf gc-cons-threshold gcmh-low-cons-threshold
           gcmh-idle-timer nil)
     (remove-hook 'pre-command-hook #'gcmh-set-high-threshold)
-    (remove-hook 'post-command-hook #'gcmh-register-idle-timer)))
+    (remove-hook 'post-command-hook #'gcmh-register-idle-gc)))
 
 (provide 'gcmh)
 
