@@ -1,6 +1,6 @@
 ;;; gcmh.el --- the Garbage Collector Magic Hack -*- lexical-binding:t -*-
 
-;; Copyright (C) 2019-2020 Andrea Corallo
+;; Copyright (C) 2019-2020  Free Software Foundation, Inc.
 
 ;; Maintainer: akrl@sdf.org
 ;; Package: gcmh
@@ -34,36 +34,35 @@
 
 ;;; Code:
 
+(defgroup gcmh nil
+  "Garbage Collector Magic Hack."
+  :group 'alloc)
+
 (defcustom gcmh-low-cons-threshold 800000
   "Low cons GC threshold.
 This is the GC threshold used while idling. Default value is the
 same of `gc-cons-threshold' default."
-  :group 'gcmh
   :type 'number)
 
 (defcustom gcmh-high-cons-threshold #x40000000
   "High cons GC threshold.
 This should be set to a value that makes GC unlikely but does not
 cause OS paging."
-  :group 'gcmh
   :type 'number)
 
 (defcustom gcmh-idle-delay 15
   "Idle time to wait in seconds before triggering GC.
 If `auto' this is auto computed based on `gcmh-auto-idle-delay-factor'."
-  :group 'gcmh
   :type '(choice number (const auto)))
 
 (defcustom gcmh-auto-idle-delay-factor 20
   "Factor to compute the idle delay when in idle-delay auto mode.
 The idle delay will be `gcmh-auto-idle-delay-factor' times the
 time the last non idle garbage collection time."
-  :group 'gcmh
   :type 'number)
 
 (defcustom gcmh-verbose nil
   "If t, print a message when garbage collecting."
-  :group 'gcmh
   :type 'boolean)
 
 (defvar gcmh-idle-timer nil
