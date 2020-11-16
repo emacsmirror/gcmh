@@ -112,10 +112,6 @@ Cancel the previous one if present."
   "Minor mode to tweak Garbage Collection strategy."
   :lighter " GCMH"
   :global t
-
-  ;; Cancel any pending timer (prevents duplicate idle timers).
-  (when (timerp gcmh-idle-timer)
-    (cancel-timer gcmh-idle-timer))
   (if gcmh-mode
       (progn
         (setf gc-cons-threshold gcmh-high-cons-threshold)
