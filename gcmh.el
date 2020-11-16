@@ -5,7 +5,7 @@
 ;; Maintainer: akrl@sdf.org
 ;; Package: gcmh
 ;; Homepage: https://gitlab.com/koral/gcmh
-;; Version: 0.1
+;; Version: 0.2
 ;; Package-Requires: ((emacs "24"))
 ;; Keywords: internal
 
